@@ -12,21 +12,21 @@
   </header>
   
   <main>
-    <!-- Ürün Listesi Alanı -->
-    <section id="urun-listesi">
-      <!-- Ürün kartlarını buraya JavaScript ekleyecek -->
-    </section>
+    <!-- Ürün Listesi veya diğer içerikler için alan buraya eklenebilir -->
     
-    <!-- Barkod Tarama Alanı -->
+    <!-- Barkod Tarama Bölümü -->
     <section id="barkod-tarama">
       <h2>Barkod Tara</h2>
-      <!-- Video Elementi: Kamera görüntüsü buraya gelecek -->
-      <video id="video" width="300" height="200"></video>
+      <!-- Video alanı: kamera akışını gösterecek -->
+      <video id="video" width="300" height="200" style="border: 1px solid #fff;"></video>
+      <!-- Barkod sonucunun gösterileceği alan -->
       <div id="barkod-sonuc">Barkod bulunamadı...</div>
+      <!-- Taramayı başlat butonu -->
       <button id="baslat-btn">Taramayı Başlat</button>
     </section>
   </main>
   
+  <!-- QuaggaJS kütüphanesini dahil ediyoruz -->
   <script src="https://unpkg.com/quagga@0.12.1/dist/quagga.min.js"></script>
   <script src="script.js"></script>
 </body>

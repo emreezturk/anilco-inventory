@@ -1,39 +1,41 @@
-// Taramayı başlatmak için buton referansı al
+// Öğelerimizin referanslarını alıyoruz
 const baslatBtn = document.getElementById("baslat-btn");
 const videoElement = document.getElementById("video");
 const barkodSonucDiv = document.getElementById("barkod-sonuc");
 
+// Taramayı başlat butonuna tıklanınca çalışacak kod
 baslatBtn.addEventListener("click", () => {
-  // QuaggaJS konfigürasyon ayarları
+  // QuaggaJS'yi başlatıyoruz
   Quagga.init({
     inputStream: {
       name: "Live",
       type: "LiveStream",
-      target: videoElement, // video elementine aktar
+      target: videoElement,  // Kamera akışını göstereceğimiz element
       constraints: {
         width: 300,
         height: 200,
-        facingMode: "environment" // arka kamera
+        facingMode: "environment"  // Arka kamera kullanımı
       },
     },
     decoder: {
-      readers: ["code_128_reader", "ean_reader", "ean_8_reader"] // Kullanılacak barkod türleri
+      readers: ["code_128_reader", "ean_reader", "ean_8_reader"]  // Desteklenen barkod türleri
     },
   }, (err) => {
     if (err) {
       console.error(err);
-      barkodSonucDiv.textContent = "Başlatırken hata oluştu: " + err;
+      barkodSonucDiv.textContent = "Tarama başlatılamadı: " + err;
       return;
     }
+    // Başarılı başlatıldığında taramaya başlıyoruz
     Quagga.start();
-    barkodSonucDiv.textContent = "Tarama başlatıldı, lütfen barkod okutun...";
+    barkodSonucDiv.textContent = "Tarama başladı, lütfen barkodu okutun...";
   });
 });
 
-// Barkod tespit edildiğinde
+// Barkod tespit edildiğinde çalışacak kısım
 Quagga.onDetected((data) => {
   const barkod = data.codeResult.code;
-  barkodSonucDiv.textContent = "Barkod: " + barkod;
-  // Tarama durdurulabilir veya barkod doğrulandığında başka işlemler ekleyebilirsin
+  barkodSonucDiv.textContent = "Okunan Barkod: " + barkod;
+  // Barkod okunduğunda taramayı durduruyoruz
   Quagga.stop();
 });
