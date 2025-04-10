@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anılço Stok Takip</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Anılço Stok Takip</h1>
+  </header>
+  
+  <main>
+    <!-- Ürün Listesi Alanı -->
+    <section id="urun-listesi">
+      <!-- Ürün kartlarını buraya JavaScript ekleyecek -->
+    </section>
+    
+    <!-- Barkod Tarama Alanı -->
+    <section id="barkod-tarama">
+      <h2>Barkod Tara</h2>
+      <!-- Video Elementi: Kamera görüntüsü buraya gelecek -->
+      <video id="video" width="300" height="200"></video>
+      <div id="barkod-sonuc">Barkod bulunamadı...</div>
+      <button id="baslat-btn">Taramayı Başlat</button>
+    </section>
+  </main>
+  
+  <script src="https://unpkg.com/quagga@0.12.1/dist/quagga.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
