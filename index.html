@@ -7,26 +7,145 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Anılço Stok Takip</h1>
+  <header class="top-bar">
+    <div class="wrapper">
+      <h1>Anılço Stok Takip</h1>
+      <p class="muted">Stok hareketlerini barkod taraması ve akıllı formlar ile saniyeler içinde yönetin.</p>
+    </div>
   </header>
-  
-  <main>
-    <!-- Ürün Listesi veya diğer içerikler için alan buraya eklenebilir -->
-    
-    <!-- Barkod Tarama Bölümü -->
-    <section id="barkod-tarama">
-      <h2>Barkod Tara</h2>
-      <!-- Video alanı: kamera akışını gösterecek -->
-      <video id="video" width="300" height="200" playsinline muted style="border: 1px solid #fff;"></video>
-      <!-- Barkod sonucunun gösterileceği alan -->
-      <div id="barkod-sonuc">Barkod bulunamadı...</div>
-      <!-- Taramayı başlat butonu -->
-      <button id="baslat-btn">Taramayı Başlat</button>
+
+  <main class="wrapper">
+    <section id="overview" class="card metrics">
+      <div class="metric">
+        <span class="metric-label">Toplam Ürün</span>
+        <strong id="total-products">0</strong>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Toplam Adet</span>
+        <strong id="total-quantity">0</strong>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Kritik Stoktaki Ürün</span>
+        <strong id="critical-products">0</strong>
+      </div>
+      <p class="muted last-update">Son güncelleme: <span id="last-update">-</span></p>
+    </section>
+
+    <section class="grid">
+      <article class="card" id="product-card">
+        <header class="card-header">
+          <h2>Ürün Ekle / Güncelle</h2>
+          <p class="muted small">Barkod alanı tarama ile otomatik doldurulur.</p>
+        </header>
+        <form id="product-form" novalidate>
+          <div class="form-grid">
+            <label class="form-field">
+              <span>Ürün Adı *</span>
+              <input type="text" id="product-name" required placeholder="Örn. USB-C Kablo">
+            </label>
+            <label class="form-field">
+              <span>Barkod / SKU *</span>
+              <input type="text" id="product-sku" required placeholder="Barkod okutabilir veya yazabilirsiniz">
+            </label>
+            <label class="form-field">
+              <span>Adet *</span>
+              <input type="number" id="product-quantity" min="0" step="1" required value="1">
+            </label>
+            <label class="form-field">
+              <span>Kritik Stok</span>
+              <input type="number" id="product-critical" min="0" step="1" placeholder="Opsiyonel">
+            </label>
+            <label class="form-field">
+              <span>Kategori</span>
+              <input type="text" id="product-category" list="category-options" placeholder="Örn. Elektronik">
+            </label>
+            <label class="form-field">
+              <span>Lokasyon</span>
+              <input type="text" id="product-location" list="location-options" placeholder="Örn. Raf A1">
+            </label>
+            <label class="form-field form-field--wide">
+              <span>Notlar</span>
+              <textarea id="product-notes" rows="3" placeholder="Ürün hakkında not ekleyin"></textarea>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" id="save-btn" class="primary">Ürünü Kaydet</button>
+            <button type="button" id="cancel-edit" class="button-secondary hidden">Vazgeç</button>
+          </div>
+        </form>
+        <div class="form-footer">
+          <button type="button" id="clear-all" class="ghost-button">Tüm verileri temizle</button>
+          <p class="muted small">* Zorunlu alanlar</p>
+        </div>
+        <div id="status-message" class="status" role="status" aria-live="polite"></div>
+        <datalist id="category-options"></datalist>
+        <datalist id="location-options"></datalist>
+      </article>
+
+      <article class="card" id="barkod-tarama">
+        <header class="card-header">
+          <h2>Barkod Tara</h2>
+          <p class="muted small">Barkodu okuttuğunuzda stok otomatik güncellenir.</p>
+        </header>
+        <div class="scanner">
+          <video id="video" width="420" height="300" playsinline muted></video>
+          <div class="scanner-actions">
+            <button type="button" id="baslat-btn">Kamerayı Aç</button>
+            <button type="button" id="durdur-btn" class="button-secondary" disabled>Dur</button>
+          </div>
+          <div id="barkod-sonuc" class="scan-output">Barkod bekleniyor...</div>
+          <p id="scan-feedback" class="scan-feedback muted">Henüz barkod okunmadı.</p>
+        </div>
+      </article>
+    </section>
+
+    <section id="inventory-list" class="card">
+      <header class="card-header">
+        <h2>Stok Listesi</h2>
+      </header>
+      <div class="table-toolbar">
+        <div class="search-group">
+          <input type="search" id="search-input" placeholder="Ürün adı, barkod, kategori veya not ara">
+        </div>
+        <div class="filter-group">
+          <select id="category-filter">
+            <option value="all">Tüm Kategoriler</option>
+          </select>
+          <button type="button" id="reset-filters" class="ghost-button">Filtreleri Temizle</button>
+        </div>
+      </div>
+      <div class="table-count">
+        <span id="table-count">0</span> ürün listeleniyor.
+      </div>
+      <div class="table-wrapper">
+        <table id="product-table">
+          <thead>
+            <tr>
+              <th scope="col">Ürün</th>
+              <th scope="col">Barkod</th>
+              <th scope="col">Kategori</th>
+              <th scope="col">Lokasyon</th>
+              <th scope="col">Adet</th>
+              <th scope="col">Son Güncelleme</th>
+              <th scope="col" class="actions-col">İşlemler</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="7" class="empty">Liste yükleniyor...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
   </main>
-  
-  <!-- QuaggaJS kütüphanesini dahil ediyoruz -->
+
+  <footer class="page-footer">
+    <div class="wrapper">
+      <p class="muted small">Anılço Inventory &mdash; Depoda düzen, işte hız.</p>
+    </div>
+  </footer>
+
   <script src="https://unpkg.com/quagga@0.12.1/dist/quagga.min.js"></script>
   <script src="script.js"></script>
 </body>
